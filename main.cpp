@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QTextStream>
 #include "foldersizegrouper.h"
+#include "typesizegrouper.h"
 #include <stdexcept>
 class Context
 {
@@ -25,7 +26,11 @@ private:
 SizeGrouper* makeGrouper(const QString& mode)//принимает режим группировки и возваращает указатель
 {
     if (mode == "1") {
-        return new FolderSizeGrouper;//создает новый объект
+        return new FolderSizeGrouper;//создает новый объект группировки по размерам папок
+    }
+
+    if (mode == "2") {
+        return new TypeSizeGrouper; //создает новый объект группировки по форматам файлов
     }
 
     throw std::runtime_error("Unknown grouping mode when expected folders|types");//выбрасыват исключения

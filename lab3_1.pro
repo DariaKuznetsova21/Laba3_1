@@ -12,6 +12,7 @@ SOURCES += \
         foldersizegrouper.cpp \
         main.cpp \
         sizegrouper.cpp \
+        typesizegrouper.cpp \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -21,3 +22,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     foldersizegrouper.h \
     sizegrouper.h \
+    typesizegrouper.h \
