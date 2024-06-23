@@ -3,61 +3,43 @@
 #include "ByFolder_Strategy.h"
 #include "ByType_Strategy.h"
 #include <stdexcept>
-class Context
-{
-public:
-    void setSizeGrouper(CalculationStrategy* grouper)//Принимает указатель на SizeGrouper
-
-    {
-        _grouper.reset(grouper);//устанавливает новый объект
-    }
-
-    QMap<QString, qint64> makeGroup(const QString& path, qint64& total)
-    {
-        return _grouper ? _grouper->group(path, total) : QMap<QString, qint64>{};//Если объект не равен nullptr, то для него вызывается метод, который возвращает карту.
-    }
-
-private:
-    std::unique_ptr<CalculationStrategy> _grouper;
-};
-
-
-
-CalculationStrategy* makeGrouper(const QString& mode)//принимает режим группировки и возваращает указатель
-{
-    if (mode == "1") {
-        return new ByFolder_Calculation;//создает новый объект группировки по размерам папок
-    }
-
-    if (mode == "2") {
-        return new ByType_Calculation; //создает новый объект группировки по форматам файлов
-    }
-
-    throw std::runtime_error("Unknown grouping mode when expected folders|types");//выбрасыват исключения
-
-}
 
 int main(int argc, char** argv)
 {
     QCoreApplication app(argc, argv);
-    Context ctx;
 
     while (true) {
         QTextStream cin(stdin);
-        QTextStream cout(stdout);
-
-        QString path = cin.readLine();//считывает строку из ввода, представляющая путь
-        QString mode = cin.readLine();
+        QTextStream cout(stdout); //Потоковые ввод и вывод
+        std::unique_ptr<CalculationStrategy> context;
 
         qint64 total = 0;
-        QMap<QString, qint64> group;
-        try {
-            ctx.setSizeGrouper(makeGrouper(mode));// создает экземпляр класса, который выбирается в соответствии с переданным режимом
-            group = ctx.makeGroup(path, total); //метод создает группу файлов в указанном пути
-        } catch (std::exception& ex) {//выбрасываются исключения
+        QMap<QString, qint64> group; //Контейнер путь - вес в байтах
+
+        QString path; //путь к корневой директории, откуда пойдут расчёты
+        cout << "Input path:" << endl;
+        cin >> path;
+
+        QString mode; //для выбора стратегии
+        cout << "Input mode (1 - folder strategy, 2 - type strategy):" << endl;
+        cin >> mode;
+        try{
+            if (mode == "1") {
+                ByFolder_Calculation* calc = new ByFolder_Calculation;
+                context.reset(calc);//создает новый объект группировки по размерам папок
+                group = context->group(path, total); //метод создает группу файлов в указанном пути
+            }
+
+            if (mode == "2") {
+                ByType_Calculation* calc = new ByType_Calculation;
+                context.reset(calc);//создает новый объект группировки по форматам файлов
+                group = context->group(path, total);
+            }
+        } catch(std::exception& ex) {//выбрасываются исключения
             cout << "Error: " << ex.what() << '\n';
             continue;
         }
+
         for (auto it = group.begin(); it != group.end(); ++it) { //проходимся по всем элементам карты, пока не достигнем последнего элемента
             QString ssize = QString::number(it.value() / 1024);//преобразуем размер группы в килобайты, а затем в строку
             QString spercent = "*";

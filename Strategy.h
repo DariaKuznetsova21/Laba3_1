@@ -9,6 +9,7 @@ public:
     virtual ~CalculationStrategy();
     virtual QMap<QString, qint64> group(const QString& path, qint64& total);
 
+
 protected:
     virtual void calculate(const QString& path, QMap<QString, qint64>& groups, const QString& currentDir, qint64& total) = 0;
 };
