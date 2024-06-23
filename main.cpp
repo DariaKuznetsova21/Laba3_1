@@ -1,12 +1,12 @@
 #include <QCoreApplication>
 #include <QTextStream>
-#include "foldersizegrouper.h"
-#include "typesizegrouper.h"
+#include "ByFolder_Strategy.h"
+#include "ByType_Strategy.h"
 #include <stdexcept>
 class Context
 {
 public:
-    void setSizeGrouper(SizeGrouper* grouper)//Принимает указатель на SizeGrouper
+    void setSizeGrouper(CalculationStrategy* grouper)//Принимает указатель на SizeGrouper
 
     {
         _grouper.reset(grouper);//устанавливает новый объект
@@ -18,19 +18,19 @@ public:
     }
 
 private:
-    std::unique_ptr<SizeGrouper> _grouper;
+    std::unique_ptr<CalculationStrategy> _grouper;
 };
 
 
 
-SizeGrouper* makeGrouper(const QString& mode)//принимает режим группировки и возваращает указатель
+CalculationStrategy* makeGrouper(const QString& mode)//принимает режим группировки и возваращает указатель
 {
     if (mode == "1") {
-        return new FolderSizeGrouper;//создает новый объект группировки по размерам папок
+        return new ByFolder_Calculation;//создает новый объект группировки по размерам папок
     }
 
     if (mode == "2") {
-        return new TypeSizeGrouper; //создает новый объект группировки по форматам файлов
+        return new ByType_Calculation; //создает новый объект группировки по форматам файлов
     }
 
     throw std::runtime_error("Unknown grouping mode when expected folders|types");//выбрасыват исключения

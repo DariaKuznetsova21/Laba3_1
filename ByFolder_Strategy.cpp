@@ -1,9 +1,9 @@
-#include "foldersizegrouper.h"
+#include "ByFolder_Strategy.h"
 #include <QDirIterator>
 #include <QFileInfo>
 #include <stdexcept>
 
-void FolderSizeGrouper::groupInto(const QString& path, QMap<QString, qint64>& groups, const QString& currentDir, qint64& total)
+void ByFolder_Calculation::calculate(const QString& path, QMap<QString, qint64>& groups, const QString& currentDir, qint64& total)
 {
     QFileInfo pathInfo(path);
     if (!pathInfo.exists() || !pathInfo.isDir()) {
@@ -20,7 +20,7 @@ void FolderSizeGrouper::groupInto(const QString& path, QMap<QString, qint64>& gr
     QDirIterator dirIt(path, QDir::Dirs | QDir::NoDotAndDotDot);
     while (dirIt.hasNext()) {
         auto info = QFileInfo(dirIt.next());
-        groupInto(info.absoluteFilePath(), groups, currentDir + QDir::separator() +  info.fileName(), currentTotal);
+        calculate(info.absoluteFilePath(), groups, currentDir + QDir::separator() +  info.fileName(), currentTotal);
     }
 
     total += currentTotal;

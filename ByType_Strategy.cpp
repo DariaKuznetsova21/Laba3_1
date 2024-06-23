@@ -1,8 +1,8 @@
-#include "typesizegrouper.h"
+#include "ByType_Strategy.h"
 #include <QDirIterator>
 #include <stdexcept>
 
-void TypeSizeGrouper::groupInto(const QString& path, QMap<QString, qint64>& groups, const QString& currentDir, qint64& total)
+void ByType_Calculation::calculate(const QString& path, QMap<QString, qint64>& groups, const QString& currentDir, qint64& total)
 {
     Q_UNUSED(currentDir);
     QFileInfo pathInfo(path);
@@ -20,6 +20,6 @@ void TypeSizeGrouper::groupInto(const QString& path, QMap<QString, qint64>& grou
     QDirIterator dirIt(path, QDir::Dirs | QDir::NoDotAndDotDot);
     while (dirIt.hasNext()) {
         auto info = QFileInfo(dirIt.next());
-        groupInto(info.absoluteFilePath(), groups, currentDir + QDir::separator() +  info.fileName(), total);
+        calculate(info.absoluteFilePath(), groups, currentDir + QDir::separator() +  info.fileName(), total);
     }
 }
