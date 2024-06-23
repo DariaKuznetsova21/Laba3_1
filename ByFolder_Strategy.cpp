@@ -12,7 +12,7 @@ void ByFolder_Calculation::calculate(const QString& path, QMap<QString, qint64>&
 //Проходится по всем файлам и суммирует их размеры
     qint64 currentTotal = 0;
     QDirIterator fileIt(path, QDir::Files | QDir::NoSymLinks);
-    while (fileIt.hasNext()) { //пока у нас есть файл в каталоге //TODO: переписать под цикл for
+    while (fileIt.hasNext()) { //пока у нас есть файл в каталоге
         auto info = QFileInfo(fileIt.next());
         currentTotal += info.size();
     }

@@ -3,6 +3,7 @@
 #include "ByFolder_Strategy.h"
 #include "ByType_Strategy.h"
 #include <stdexcept>
+#include <memory>
 
 int main(int argc, char** argv)
 {
@@ -41,13 +42,13 @@ int main(int argc, char** argv)
         }
 
         for (auto it = group.begin(); it != group.end(); ++it) { //проходимся по всем элементам карты, пока не достигнем последнего элемента
-            QString ssize = QString::number(it.value() / 1024);//преобразуем размер группы в килобайты, а затем в строку
-            QString spercent = "*";
+            QString size_group = QString::number(it.value() / 1024);//преобразуем размер группы в килобайты, а затем в строку
+            QString spercent;
             if (total != 0) {
                 auto percent = 100 * static_cast<double>(it.value()) / total;//вычисляем процентное соотношение размера текущей группы файлов относительно общего размера всех файлов
                 spercent = percent > 0.01 ? QString::number(percent, 'f', 2) : "< 0.01";//Форматируем процент в строку с двумя знаками после запятой, если он больше 0.01
             }
-           cout << it.key()<< " --- " << ssize << "kb --- " << spercent << "%\n";
+           cout << it.key()<< " size " << size_group << "kb --> " << spercent << "%\n";
         }
 
         cout << "---------------------------------\n";
